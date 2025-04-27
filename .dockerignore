@@ -1,2 +1,5 @@
 .github/
 .git/
+configs/
+Dockerfile
+compose.yaml

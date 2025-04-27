@@ -1,0 +1,40 @@
+services:
+  app:
+    build: .
+    container_name: application_container
+    ports: # For testing
+      - "8000:8000"
+    # expose:
+    #   - "8000"
+    #
+    networks:
+      - monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_container
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml  # Mount the Prometheus config
+    networks:
+      - monitoring
+    restart: always
+    expose:
+      - "9090"  # Expose the Prometheus port to the Docker network but not to the host
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_container
+    ports:
+      - "3000:3000"  # Expose Grafana port to the host machine
+    networks:
+      - monitoring
+    restart: always
+    depends_on:
+      - prometheus
+
+
+
+networks:
+  monitoring:
+    driver: bridge

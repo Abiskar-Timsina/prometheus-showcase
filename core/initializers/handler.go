@@ -4,6 +4,9 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+
+	prometheusMetrics "github.com/Abiskar-Timsina/prometheus-showcase/core/metrics"
+	"github.com/Abiskar-Timsina/prometheus-showcase/core/utils"
 )
 
 type Handler struct {
@@ -17,11 +20,15 @@ func (s Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<h1>Welcome to the Monitoring and Logging Demo </h1>"))
 		return
 	case "endpoint-1":
+		prometheusMetrics.HeapMemory.Set(float64(utils.GetHeapBytes()))
+		prometheusMetrics.Endpoint1Counter.Inc()
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("<h1>Endpoint 1</h1>"))
 		return
 
 	case "endpoint-2":
+		prometheusMetrics.HeapMemory.Set(float64(utils.GetHeapBytes()))
+		prometheusMetrics.Endpoint2Counter.Inc()
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("<h1>Endpoint 2</h1>"))
 		return
